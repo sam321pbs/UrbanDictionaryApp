@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">UrbanDictionaryApp</string>
+    <string name="hint_type_word_here">Type word here</string>
+    <string name="sort_by">Sort By:</string>
+    <string name="thumbs_up">Thumbs up</string>
+    <string name="thumbs_down">Thumbs down</string>
+
+    <string-array name="sort_list_options">
+        <item>Thumbs up</item>
+        <item>Thumbs down</item>
+    </string-array>
+</resources>
