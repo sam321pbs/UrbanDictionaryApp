@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sammengistu.urbandictionaryapp.R
-import com.sammengistu.urbandictionaryapp.models.DefinitionModel
+import com.sammengistu.urbandictionaryapp.models.Definition
 
 class DictionaryAdapter(val context: Context) :
     RecyclerView.Adapter<DictionaryAdapter.DefinitionViewHolder>() {
 
-    val data = ArrayList<DefinitionModel>()
+    val data = ArrayList<Definition>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DefinitionViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_definition, parent, false)
@@ -30,7 +30,7 @@ class DictionaryAdapter(val context: Context) :
         holder.downVote.text = definition.thumbsDown.toString()
     }
 
-    fun setData(data : List<DefinitionModel>) {
+    fun setData(data : List<Definition>) {
         this.data.clear()
         this.data.addAll(data)
         notifyDataSetChanged()

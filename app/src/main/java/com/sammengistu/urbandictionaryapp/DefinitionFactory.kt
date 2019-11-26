@@ -12,6 +12,5 @@ class DefinitionFactory(
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>) =
-        DefinitionViewModel(repository) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>) = DefinitionViewModel(repository) as T
 }

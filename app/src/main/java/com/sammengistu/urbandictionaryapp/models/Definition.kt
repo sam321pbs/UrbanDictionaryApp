@@ -1,24 +1,24 @@
 package com.sammengistu.urbandictionaryapp.models
 
-import org.json.JSONObject
+import androidx.room.Entity
+import com.google.gson.annotations.SerializedName
 
-data class DefinitionModel(
+@Entity(primaryKeys = ["defid"], tableName = "definitions")
+data class Definition(
+    @field:SerializedName("defid")
+    val defid: String,
+    @field:SerializedName("word")
     val word: String?,
+    @field:SerializedName("definition")
     val definition: String?,
+    @field:SerializedName("thumbs_up")
     val thumbsUp: Int?,
+    @field:SerializedName("thumbs_down")
     val thumbsDown: Int?
 ) {
     companion object {
-        fun fromJson(jsonObject: JSONObject): DefinitionModel {
-            val word = jsonObject.getString("word")
-            val definition = jsonObject.getString("definition")
-            val thumbsUp = jsonObject.getInt("thumbs_up")
-            val thumbsDown = jsonObject.getInt("thumbs_down")
-            return DefinitionModel(word, definition, thumbsUp, thumbsDown)
-        }
-
         fun getThumbsUpComparator() =
-            Comparator<DefinitionModel> { d1, d2 ->
+            Comparator<Definition> { d1, d2 ->
                 if (d1 != null && d2 != null && d1.thumbsUp != null && d2.thumbsUp != null) {
                     when {
                         d1.thumbsUp < d2.thumbsUp -> 1
@@ -31,7 +31,7 @@ data class DefinitionModel(
             }
 
         fun getThumbsDownComparator() =
-            Comparator<DefinitionModel> { d1, d2 ->
+            Comparator<Definition> { d1, d2 ->
                 if (d1 != null && d2 != null && d1.thumbsDown != null && d2.thumbsDown != null) {
                     when {
                         d1.thumbsDown < d2.thumbsDown -> 1

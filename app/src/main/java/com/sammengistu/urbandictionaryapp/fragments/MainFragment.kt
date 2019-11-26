@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sammengistu.urbandictionaryapp.DefinitionFactory
 import com.sammengistu.urbandictionaryapp.DefinitionsRepository
 import com.sammengistu.urbandictionaryapp.R
-import com.sammengistu.urbandictionaryapp.SharedPrefCache
 import com.sammengistu.urbandictionaryapp.adapters.DictionaryAdapter
-import com.sammengistu.urbandictionaryapp.models.DefinitionModel
+import com.sammengistu.urbandictionaryapp.db.DefinitionDao
+import com.sammengistu.urbandictionaryapp.db.UrbanDictionaryDb
+import com.sammengistu.urbandictionaryapp.models.Definition
+import com.sammengistu.urbandictionaryapp.network.RetrofitClientInstance
+import com.sammengistu.urbandictionaryapp.network.UrbanDictionaryService
 import com.sammengistu.urbandictionaryapp.viewmodels.DefinitionViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
@@ -28,10 +31,14 @@ class MainFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: DictionaryAdapter
     private var lastLookedUpWord: String? = null
-    private var definitions: List<DefinitionModel> = ArrayList()
+    private var definitions: List<Definition> = ArrayList()
     private var sortByThumbsUp = true
     private val viewModel: DefinitionViewModel by viewModels(
-        factoryProducer = { getFactory() }
+        factoryProducer = {
+            val service = RetrofitClientInstance.retrofit.create(UrbanDictionaryService::class.java)
+            val dao: DefinitionDao = UrbanDictionaryDb.getInstance(context!!).definitionDao()
+            DefinitionFactory(DefinitionsRepository.getInstance(service, dao))
+        }
     )
 
     override fun onCreateView(
@@ -119,7 +126,7 @@ class MainFragment : Fragment() {
 
     private fun lookUpWord(word: String) {
         progressBar.visibility = View.VISIBLE
-        viewModel.getNewDefinition(word)
+        viewModel.setTerm(word)
     }
 
     private fun setUpRecyclerView() {
@@ -143,16 +150,11 @@ class MainFragment : Fragment() {
 
     private fun setDataOnAdapter() {
         if (sortByThumbsUp) {
-            Collections.sort(this.definitions, DefinitionModel.getThumbsUpComparator())
+            Collections.sort(this.definitions, Definition.getThumbsUpComparator())
         } else {
-            Collections.sort(this.definitions, DefinitionModel.getThumbsDownComparator())
+            Collections.sort(this.definitions, Definition.getThumbsDownComparator())
         }
         adapter.setData(definitions)
-    }
-
-    private fun getFactory(): DefinitionFactory {
-        val sharedPrefCache = SharedPrefCache(context!!)
-        return DefinitionFactory(DefinitionsRepository.getInstance(sharedPrefCache))
     }
 
     companion object {
