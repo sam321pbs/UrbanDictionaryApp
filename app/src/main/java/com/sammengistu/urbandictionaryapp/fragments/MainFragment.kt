@@ -33,6 +33,7 @@ class MainFragment : Fragment() {
     private var lastLookedUpWord: String? = null
     private var definitions: List<Definition> = ArrayList()
     private var sortByThumbsUp = true
+
     private val viewModel: DefinitionViewModel by viewModels(
         factoryProducer = {
             val service = RetrofitClientInstance.retrofit.create(UrbanDictionaryService::class.java)
@@ -59,17 +60,11 @@ class MainFragment : Fragment() {
         setUpRecyclerView()
         addObserver()
         searchButton.setOnClickListener {
-            val word = editText.text.toString()
-            if (word.isNotBlank()) {
-                lastLookedUpWord = word
-                lookUpWord(word)
-            } else {
-                Toast.makeText(activity, "Please enter a word", Toast.LENGTH_SHORT).show()
-            }
+            onSearchClicked()
         }
         createSpinner()
         // Build view from last state
-        updateFromLastState(savedInstanceState)
+        updateViewFromSavedState(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -77,6 +72,16 @@ class MainFragment : Fragment() {
         // Save last typed text and last looked up word
         outState.putString(EXTRA_WORD, lastLookedUpWord)
         outState.putString(EXTRA_LAST_TEXT, editText.text.toString())
+    }
+
+    private fun onSearchClicked() {
+        val word = editText.text.toString()
+        if (word.isNotBlank()) {
+            lastLookedUpWord = word
+            lookUpWord(word)
+        } else {
+            Toast.makeText(activity, "Please enter a word", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun createSpinner() {
@@ -108,7 +113,7 @@ class MainFragment : Fragment() {
             }
         }
 
-    private fun updateFromLastState(savedInstanceState: Bundle?) {
+    private fun updateViewFromSavedState(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val lastWord = savedInstanceState.getString(EXTRA_WORD)
             val lastText = savedInstanceState.getString(EXTRA_LAST_TEXT)

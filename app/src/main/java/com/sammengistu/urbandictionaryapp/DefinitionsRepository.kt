@@ -10,7 +10,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
 /**
- * DefinitionsRepository is in charge of getting definitions from either the SharedPrefCache or
+ * DefinitionsRepository is in charge of getting definitions from either the db or
  * fetching it over the network
  */
 class DefinitionsRepository private constructor(

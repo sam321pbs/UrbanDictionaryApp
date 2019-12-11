@@ -18,7 +18,7 @@ class DefinitionViewModel(private val repository: DefinitionsRepository) : ViewM
     val definitionModels: LiveData<List<Definition>> = Transformations
         .switchMap(_term) { term ->
             if (term == null) {
-                AbsentLiveDate.create()
+                AbsentLiveData.create()
             } else {
                 repository.getDefinitions(term)
             }

@@ -44,7 +44,5 @@ class DictionaryAdapter(val context: Context) :
 
     companion object {
         val TAG = DictionaryAdapter::class.java.simpleName
-
-
     }
 }
