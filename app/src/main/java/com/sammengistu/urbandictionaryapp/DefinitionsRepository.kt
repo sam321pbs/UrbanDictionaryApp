@@ -8,6 +8,7 @@ import com.sammengistu.urbandictionaryapp.models.Definition
 import com.sammengistu.urbandictionaryapp.network.UrbanDictionaryService
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.util.*
 
 /**
  * DefinitionsRepository is in charge of getting definitions from either the db or
@@ -23,10 +24,11 @@ class DefinitionsRepository private constructor(
         if (term.isBlank()) return liveData
 
         doAsync {
-            val dbDefinition = dao.findByTerm(term)
+            // retrieve from db
+            val dbDefinitions = dao.findByTerm(term)
 
-            if (dbDefinition.isNotEmpty()) {
-                uiThread { liveData.value = dbDefinition }
+            if (dbDefinitions.isNotEmpty()) {
+                uiThread { liveData.value = dbDefinitions }
             } else {
                 val call = service.getDefinitions(term)
                 val response = call.execute()
@@ -35,12 +37,13 @@ class DefinitionsRepository private constructor(
                     Log.d(TAG, "Success \n ${response.message()}")
                     val body = response.body()?.list
                     if (body != null) {
+                        // Insert to db
                         dao.insert(body)
                     }
                     uiThread { liveData.value = body }
                 } else {
-                    Log.e(TAG, response.errorBody().toString())
-                    uiThread { liveData.value = null }
+                    Log.e(TAG, "Error code: ${response.message()}")
+                    uiThread { liveData.value = Collections.emptyList() }
                 }
             }
         }

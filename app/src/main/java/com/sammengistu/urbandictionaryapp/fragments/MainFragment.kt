@@ -144,11 +144,12 @@ class MainFragment : Fragment() {
     private fun addObserver() {
         viewModel.definitionModels.removeObservers(viewLifecycleOwner)
         viewModel.definitionModels.observe(viewLifecycleOwner) { definitions ->
-            this.definitions = definitions
-            setDataOnAdapter()
             progressBar.visibility = View.GONE
             if (definitions.isEmpty()) {
                 Toast.makeText(context, "Error/No definitions", Toast.LENGTH_SHORT).show()
+            } else {
+                this.definitions = definitions
+                setDataOnAdapter()
             }
         }
     }
